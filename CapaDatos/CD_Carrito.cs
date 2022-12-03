@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CapaEntidad;
 using System.Data;
 using System.Data.SqlClient;
-
+using System.Globalization;
 
 namespace CapaDatos
 {
@@ -102,7 +102,7 @@ namespace CapaDatos
             return resultado;
         }
 
-        public List<Carrito> ListarProducto(int IdCliente)
+        public List<Carrito> ListarProducto(int idCliente)
         {
             List<Carrito> lista = new List<Carrito>();
 
@@ -116,7 +116,7 @@ namespace CapaDatos
 
 
                     SqlCommand commandoSql = new SqlCommand(query, oConexion);
-                    commandoSql.Parameters.AddWithValue("@IdCliente", IdCliente);
+                    commandoSql.Parameters.AddWithValue("@IdCliente", idCliente);
                     commandoSql.CommandType = CommandType.Text;
 
                     oConexion.Open();
@@ -127,27 +127,18 @@ namespace CapaDatos
                         while (dR.Read())
                         {
 
-                            lista.Add(new Producto
+                            lista.Add(new Carrito
                             {
-                                IdProducto = Convert.ToInt32(dR["IdProducto"]),
-                                Nombre = dR["Nombre"].ToString(),
-                                Descripcion = dR["Descripcion"].ToString(),
-                                oMarca2 = new Marca()
-                                {
-                                    IdMarca = Convert.ToInt32(dR["IdMarca"]),
-                                    Descripcion = dR["DesMarca"].ToString(),
 
+                                oProducto2 = new Producto() { 
+                                    IdProducto = Convert.ToInt32(dR["IdProducto"]),
+                                    Nombre = dR["Nombre"].ToString(),
+                                    Precio = Convert.ToDecimal(dR["Precio"], new CultureInfo("es-CL")),
+                                    RutaImagen = dR["RutaImagen"].ToString(),
+                                    NombreImagen = dR["NombreImagen"].ToString(),
+                                    oMarca2 = new Marca() { Descripcion = dR["DesMarca"].ToString() }
                                 },
-                                oCategoria2 = new Categoria()
-                                {
-                                    IdCategoria = Convert.ToInt32(dR["IdCategoria"]),
-                                    Descripcion = dR["DesCategoria"].ToString(),
-                                },
-                                Precio = Convert.ToDecimal(dR["Precio"], new CultureInfo("es-CL")),
-                                Stock = Convert.ToInt32(dR["Stock"]),
-                                RutaImagen = dR["RutaImagen"].ToString(),
-                                NombreImagen = dR["NombreImagen"].ToString(),
-                                Activo = Convert.ToBoolean(dR["Activo"]),
+                                Cantidad = Convert.ToInt32(dR["Cantidad"]),
                             });
                         }
                     }
@@ -156,9 +147,38 @@ namespace CapaDatos
             catch
             {
 
-                lista = new List<Producto>();
+                lista = new List<Carrito>();
             }
             return lista;
+        }
+
+        public bool EliminarCarrito(int idCliente, int idProducto)
+        {
+            bool resultado = true;
+
+            try
+            {
+                using (SqlConnection oConexion = new SqlConnection(Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_EliminarCarrito", oConexion);
+                    cmd.Parameters.AddWithValue("IdCliente", idCliente);
+                    cmd.Parameters.AddWithValue("IdProducto", idProducto);
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oConexion.Open();
+
+                    cmd.ExecuteReader();
+
+                    resultado = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                resultado = true;
+            }
+            return resultado;
         }
     }
 }
