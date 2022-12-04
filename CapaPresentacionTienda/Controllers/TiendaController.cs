@@ -32,7 +32,6 @@ namespace CapaPresentacionTienda.Controllers
             return View(oProducto);
         }
 
-
         [HttpGet]
         public JsonResult ListarCategorias()
         
@@ -41,7 +40,6 @@ namespace CapaPresentacionTienda.Controllers
             lista = new CN_Categoria().Listar();
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);            
         }
-
 
         [HttpPost]
         public JsonResult ListarMarcaPorCategoria(int idCategoria)
@@ -141,7 +139,6 @@ namespace CapaPresentacionTienda.Controllers
 
         }
 
-
         [HttpPost]
         public JsonResult OPeracionCarrito(int idProducto, bool sumar)
         {
@@ -166,6 +163,38 @@ namespace CapaPresentacionTienda.Controllers
 
 
             return Json(new { respuesta = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerDepartamento()
+        {
+            List<Departamento> oLista = new List<Departamento>();
+            oLista = new CN_Ubicacion().ObtenerDepartamento();
+
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerProvincia(string idDepartamento)
+        {
+            List<Provincia> oLista = new List<Provincia>();
+            oLista = new CN_Ubicacion().ObtenerProvincias(idDepartamento);
+
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerDistrito(string idDepartamento, string idProvincia)
+        {
+            List<Distrito> oLista = new List<Distrito>();
+            oLista = new CN_Ubicacion().ObtenerDistrito(idDepartamento, idProvincia);
+
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Carrito()
+        {
+            return View();
         }
     }
 }

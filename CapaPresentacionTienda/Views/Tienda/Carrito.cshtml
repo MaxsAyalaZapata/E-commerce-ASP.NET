@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Carrito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="Container my-5">
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+                        <!--Detalle producto-->
+                        <div class="col-sm-9"> </div>
+
+                        <!--Detalle envio-->
+                        <div class="col-sm-3">
+                            <div class="card-body bg-light" >
+                                <h5 class="card-title"> Detalle envio</h5>
+                                <form>
+                                    <div class="mb-2">
+                                        <label for="cboDepartamento" class="form-label">Departamento:</label>
+                                        <select class="form-select form-select-sm" id="cboDepartamento"></select>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label for="cboProvincia" class="form-label">Provincia:</label>
+                                        <select class="form-select form-select-sm" id="cboProvincia"></select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="cboDistrito" class="form-label">Distrito:</label>
+                                        <select class="form-select form-select-sm" id="cboDistrito"></select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="txtNombreDeContacto" class="form-label">Nombre de conmtacto:</label>
+                                        <input type="text" class="form-control form-select-sm" id="txtNombreDeContacto" autocomplete="off">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="txtDireccion" class="form-label">Direccion:</label>
+                                        <input type="text" class="form-control form-select-sm" id="txtDireccion" autocomplete="off">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="txtTelefono" class="form-label">Nombre de conmtacto:</label>
+                                        <input type="text" class="form-control form-select-sm" id="txtTelefono" autocomplete="off">
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="button" class="btn btn-success" onclick="RealizarPago()">
+                                            <i class="fab fa-paypal"></i> Terminar y procesar pago
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
