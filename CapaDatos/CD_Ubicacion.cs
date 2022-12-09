@@ -30,12 +30,13 @@ namespace CapaDatos
 
                     using (SqlDataReader dR = commandoSql.ExecuteReader())
                     {
+                        var m = dR.HasRows;
                         while (dR.Read())
                         {
                             lista.Add(new Departamento
                             {
                                 IdDepartamento = dR["IdDepartamento"].ToString(),
-                                Descripcion = dR["Descipcion"].ToString(),
+                                Descripcion = dR["Descripcion"].ToString(),
                             });
                         }
                     }
@@ -66,18 +67,19 @@ namespace CapaDatos
 
                     using (SqlDataReader dR = commandoSql.ExecuteReader())
                     {
+                        var m = dR.HasRows;
                         while (dR.Read())
                         {
                             lista.Add(new Provincia
                             {
                                 IdProvincia = dR["IdProvincia"].ToString(),
-                                Descripcion = dR["Descipcion"].ToString(),
+                                Descripcion = dR["Descripcion"].ToString(),
                             });
                         }
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
                 lista = new List<Provincia>();
             }
@@ -92,7 +94,7 @@ namespace CapaDatos
             {
                 using (SqlConnection oConexion = new SqlConnection(Conexion.cn))
                 {
-                    string consulta = "SELECT * FROM DISTRITO WHERE IdProvincia2 = @IdDepartamento AND IdDepartamento3 = @IdProvincia";
+                    string consulta = "SELECT * FROM DISTRITO WHERE IdProvincia2 = @IdProvincia AND IdDepartamento3 = @IdDepartamento";
 
                     SqlCommand commandoSql = new SqlCommand(consulta, oConexion);
                     commandoSql.Parameters.AddWithValue("@IdDepartamento", idDepartamento);
@@ -103,12 +105,13 @@ namespace CapaDatos
 
                     using (SqlDataReader dR = commandoSql.ExecuteReader())
                     {
+                        var m = dR.HasRows;
                         while (dR.Read())
                         {
                             lista.Add(new Distrito
                             {
                                 IdDistrito = dR["IdDistrito"].ToString(),
-                                Descripcion = dR["Descipcion"].ToString(),
+                                Descripcion = dR["Descripcion"].ToString(),
                             });
                         }
                     }

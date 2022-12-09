@@ -7,6 +7,9 @@ using System.Web.Mvc;
 using CapaEntidad;
 using CapaNegocio;
 using System.IO;
+using System.Threading.Tasks;
+using System.Data;
+using System.Globalization;
 
 namespace CapaPresentacionTienda.Controllers
 {
@@ -140,15 +143,14 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpPost]
-        public JsonResult OPeracionCarrito(int idProducto, bool sumar)
+        public JsonResult OperacionCarrito(int idProducto, bool sumar)
         {
             int idCliente = ((Cliente)Session["Cliente"]).IdCliente;
             bool respuesta = false;
             string mensaje = string.Empty;
             
-            respuesta = new CN_Carrito().OperacionCarrito(idCliente, idProducto, true, out mensaje);
+            respuesta = new CN_Carrito().OperacionCarrito(idCliente, idProducto, sumar, out mensaje);
            
-
             return Json(new { respuesta = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
@@ -196,5 +198,39 @@ namespace CapaPresentacionTienda.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<JsonResult> ProcesarPago(List<Carrito> oListaCarrito, Venta oVenta)
+        {
+            decimal total = 0;
+            DataTable detalle_venta = new DataTable();
+            detalle_venta.Locale = new CultureInfo("es-CH");
+            detalle_venta.Columns.Add("IdProducto", typeof(string));
+            detalle_venta.Columns.Add("Cantidad", typeof(int));
+            detalle_venta.Columns.Add("Total", typeof(decimal));
+
+            foreach (Carrito oCarrito in oListaCarrito)
+            {
+                decimal subtotal = Convert.ToDecimal(oCarrito.Cantidad.ToString()) * oCarrito.oProducto2.Precio;
+                total += subtotal;
+
+                detalle_venta.Rows.Add(new object[]
+                {
+                    oCarrito.oProducto2.IdProducto,
+                    oCarrito.Cantidad,
+                    subtotal
+                });
+            }
+            oVenta.MontoTotal = total;
+            oVenta.IdCliente3 = ((Cliente)Session["Cliente"]).IdCliente;
+
+            TempData["Venta"] = oVenta;
+            TempData["DetalleVenta"] = detalle_venta;
+
+            return Json(new { Status = true, LInk = "/Tienda/PagoEfectuado?idTransaccion=code0001&status=true" }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
     }
 }
