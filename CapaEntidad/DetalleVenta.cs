@@ -13,7 +13,7 @@ namespace CapaEntidad
         public int IdVenta2 { get; set; }
         public Producto oProducto3 { get; set; }
         public int Cantidad { get; set; }
-        public decimal DECIMAL { get; set; }
+        public decimal Total { get; set; }
         public string IdTrasaccion { get; set; }                
     }
 }

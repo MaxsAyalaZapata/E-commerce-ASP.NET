@@ -9,3 +9,13 @@ C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion
 C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.csproj.CopyComplete
 C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.dll
 C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\obj\Debug\CapaNegocio.pdb
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\Newtonsoft.Json.dll
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\Newtonsoft.Json.xml
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Security.AccessControl.dll
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Security.Permissions.dll
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Security.AccessControl.xml
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Security.Permissions.xml
+C:\Users\maxs1\OneDrive\Escritorio\maxs\ASP\ProyectoASPControladorIngresoGestion(MVC)\ASPSistemaCarrito\CursoMVC\CapaNegocio\bin\Debug\System.Security.Principal.Windows.xml

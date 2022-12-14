@@ -330,12 +330,12 @@
 
          $(document).on("click", ".btn-eliminar", function ()
          {
- 
+
              var id_producto = $(this).data("idproducto");
 
              var card_producto = $(this).parents("div.card-producto")
 
-          
+
             jQuery.ajax({
                 url: '@Url.Action("EliminarCarrito", "Tienda")',
                 type: "POST",
@@ -356,7 +356,68 @@
                     }
                 }
             })
-        })
+         })
+
+        function RealizarPago()
+        {
+            if (parseInt($("#cantidadcarito").text()) == 0)
+            {
+                swal("", "No existe productos en el carrito", "warning");
+                return
+            }
+            if ($("#cboDistrito").val() == null || $("#txtNombreDeContacto").val() == "" || $("#txtDireccion").val() == "" || $("#txtTelefono").val() == "")
+            {
+                swal("", "Debe completar los datos del detalle envio", "warning");
+                return
+            }
+            var venta = {
+                TotalProducto: $("input.input-cantidad").length,
+                MontoTotal: 0,
+                Contacto: $("#txtNombreDeContacto").val(),
+                IdDistrito: $("#cboDistrito").val(),
+                Telefono: $("#txtTelefono").val(),
+                Direccion: $("#txtDireccion").val()
+            }
+
+            var lista_carrito = [];
+
+            $("input.input-cantidad").each(function (i)
+            {
+                var producto = $(this).data("oProducto2");
+                var cantidad = parseFloat($(this).val());
+
+                lista_carrito.push({
+                    oProducto2 : producto,
+                    cantidad : cantidad
+                })
+            })
+
+            jQuery.ajax({
+                url: '@Url.Action("ProcesarPago", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ oListaCarrito: lista_carrito, oVenta: venta}),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $.LoadingOverlay("hide")
+
+                    if (data.Status) {
+                        var jsonResult = data.Response;
+                        var links = jsonResult.links;
+                        var resultado = links.find(item => item.rel === "approve");
+
+                        window.location.href = resultado.href
+                    } else {
+
+                        swal("", "Vuelva a intentarlo mas tarde", "warning");
+                    }
+                },
+                beforeSend: function () { $.LoadingOverlay("show") },
+                error: function () { $.LoadingOverlay("hide") }
+                                    
+
+            })
+        }
     </script>
     }
 

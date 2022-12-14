@@ -10,6 +10,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Data;
 using System.Globalization;
+using CapaEntidad.Paypal;
+using CapaPresentacionTienda.Filter;
 
 namespace CapaPresentacionTienda.Controllers
 {
@@ -193,13 +195,15 @@ namespace CapaPresentacionTienda.Controllers
 
             return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
         }
-
+        
+        [ValidarSession]
+        [Authorize]
         public ActionResult Carrito()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] 
         public async Task<JsonResult> ProcesarPago(List<Carrito> oListaCarrito, Venta oVenta)
         {
             decimal total = 0;
@@ -209,11 +213,24 @@ namespace CapaPresentacionTienda.Controllers
             detalle_venta.Columns.Add("Cantidad", typeof(int));
             detalle_venta.Columns.Add("Total", typeof(decimal));
 
+            List<Item> oListaItem = new List<Item>();
+
+
             foreach (Carrito oCarrito in oListaCarrito)
             {
                 decimal subtotal = Convert.ToDecimal(oCarrito.Cantidad.ToString()) * oCarrito.oProducto2.Precio;
                 total += subtotal;
 
+                oListaItem.Add(new Item
+                {
+                    name = oCarrito.oProducto2.Nombre,
+                    quantity = oCarrito.Cantidad.ToString(),
+                    unit_amount = new UnitAmount() 
+                    {
+                        currency_code = "USD",
+                        value = oCarrito.oProducto2.Precio.ToString("G", new CultureInfo("es-CH"))
+                    }
+                });
                 detalle_venta.Rows.Add(new object[]
                 {
                     oCarrito.oProducto2.IdProducto,
@@ -221,16 +238,114 @@ namespace CapaPresentacionTienda.Controllers
                     subtotal
                 });
             }
+
+            PurchaseUnit purchaseUnit = new PurchaseUnit()
+            {
+                amount = new Amount()
+                {
+                    currency_code = "USD",
+                    value = total.ToString("G", new CultureInfo("es-CH")),
+                    breakdown = new Breakdown()
+                    { 
+                        item_total = new ItemTotal() 
+                        {
+                            currency_code = "USD",
+                            value = total.ToString("G", new CultureInfo("es-CH")),
+                        },
+                    }
+                },
+                description = "compra de articulos en mi tienda",
+                items = oListaItem
+            };
+
+            Checkout_Order ocheckoutOrder = new Checkout_Order() 
+            {
+                intent = "CAPTURE",
+                purchase_units = new List<PurchaseUnit>() { purchaseUnit },
+                application_context = new ApplicationContext() 
+                {
+                    brand_name = "MiTienda.com",
+                    landing_page = "NO_PREFERENCE",
+                    user_action = "PAY_NOW",
+                    return_url = "https://localhost:44335/Tienda/PagoEfectuado",
+                    cancel_url = "https://localhost:44335/Tienda/Carrito"
+                }
+                
+            };
+            
             oVenta.MontoTotal = total;
             oVenta.IdCliente3 = ((Cliente)Session["Cliente"]).IdCliente;
 
             TempData["Venta"] = oVenta;
             TempData["DetalleVenta"] = detalle_venta;
 
-            return Json(new { Status = true, LInk = "/Tienda/PagoEfectuado?idTransaccion=code0001&status=true" }, JsonRequestBehavior.AllowGet);
+            CN_Paypal opaypayl = new CN_Paypal();
+            Response_Paypal<Response_Checkout> response_paypal = new Response_Paypal<Response_Checkout>();
+
+            response_paypal = await opaypayl.CrearSolicitud(ocheckoutOrder);
+                
+
+            return Json(response_paypal, JsonRequestBehavior.AllowGet);
 
         }
 
+        [ValidarSession]
+        [Authorize]
+        public async Task<ActionResult> PagoEfectuado()
+        {
+            string token = Request.QueryString["token"];
+
+            CN_Paypal opaypal = new CN_Paypal();
+
+            Response_Paypal<Response_Capture> response_paypal = new Response_Paypal<Response_Capture>();
+            response_paypal = await opaypal.AprobarPago(token);
+
+            ViewData["Status"] = response_paypal.Status;
+
+            if (response_paypal.Status)
+            {
+                Venta oVenta = (Venta) TempData["Venta"];
+                DataTable detalle_venta = (DataTable) TempData["DetalleVenta"];
+
+                oVenta.IdTrasaccion = response_paypal.Response.purchase_units[0].payments.captures[0].id;
+                string mensaje = string.Empty;
+
+                bool respuesta = new CN_Venta().Registrar(oVenta, detalle_venta, out mensaje);
+
+                ViewData["IdTransaccion"] = oVenta.IdTrasaccion;
+            }
+            return View();
+        }
+
+        [ValidarSession]
+        [Authorize]
+        public ActionResult MisCompras()
+        {
+            int idCliente = ((Cliente)Session["Cliente"]).IdCliente;
+
+            List<DetalleVenta> oLista = new List<DetalleVenta>();
+
+            bool conversion;
+
+            oLista = new CN_Venta().ListarCompras(idCliente).Select(oc => new DetalleVenta()
+            {
+                oProducto3 = new Producto()
+                {
+                    Nombre = oc.oProducto3.Nombre,
+                    oMarca2 = oc.oProducto3.oMarca2,
+                    Precio = oc.oProducto3.Precio,
+                    Base64 = CN_Recursos.CovertirBase64(Path.Combine(oc.oProducto3.RutaImagen, oc.oProducto3.NombreImagen), out conversion),
+                    Extensiion = Path.GetExtension(oc.oProducto3.NombreImagen)
+                },
+                Cantidad = oc.Cantidad,
+                Total = oc.Total,
+                IdTrasaccion = oc.IdTrasaccion
+
+            }).ToList();
+
+            return View(oLista);
+
+        }
 
     }
 }
