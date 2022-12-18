@@ -11,10 +11,10 @@ using CapaNegocio;
 using ClosedXML.Excel;
 
 namespace CapaPresentacionAdmin.Controllers
-{
+{   [Authorize]
     public class HomeController : Controller
     {
-        //   [Authorize]
+        
 
 
         public ActionResult Index()

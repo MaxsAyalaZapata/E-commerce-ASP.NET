@@ -13,16 +13,17 @@ using Newtonsoft.Json;
 
 namespace CapaPresentacionAdmin.Controllers
 {
+    [Authorize]
     public class MantenedorController : Controller
     {
-        [Authorize]
+        
           
         // GET: Mantenedor
         public ActionResult Categoria()
         {
             return View();
         }
-
+     
         public ActionResult Marca()
         {
             return View();

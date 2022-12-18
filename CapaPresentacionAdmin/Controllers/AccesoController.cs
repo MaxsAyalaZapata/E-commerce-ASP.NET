@@ -47,14 +47,14 @@ namespace CapaPresentacionAdmin.Controllers
                 if (oUsuario.ReEstablecer)
                 {
                     TempData["IdUsuario"] = oUsuario.IdUsuario; 
-
-                    FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); 
-
                     return RedirectToAction("CambiarClave");
                 }
+
+                FormsAuthentication.SetAuthCookie(oUsuario.Correo, false);
+                ViewBag.Error = null;
+
                 return RedirectToAction("Index","Home"); 
             }
-      
         }
 
         [HttpPost]
